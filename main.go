@@ -13,8 +13,10 @@ import (
 )
 
 func main() {
-	// removeVideo := true
+	removeVideo := true
 	// location?
+	// video quality?
+	// audio quality?
 	for {
 		reader := bufio.NewReader(os.Stdin)
 
@@ -70,6 +72,9 @@ func main() {
 
 		fmt.Println("Video extracted successfully")
 
+		stream.Close()
+		file.Close()
+
 		fmt.Println("Extracting audio...")
 		cmd := exec.Command("ffmpeg", "-i", "video.mp4", "-vn", "-ab", "128k", "-ar", "44100", "-y", fileTitle+".mp3")
 		err = cmd.Run()
@@ -80,7 +85,14 @@ func main() {
 
 		fmt.Println("Audio extracted successfully")
 
-		// add: if statement to check removeVideo
+		if removeVideo {
+			err = os.Remove("video.mp4")
+			if err != nil {
+				fmt.Println("Error deleting video file:", err)
+			} else {
+				fmt.Println("Video file removed")
+			}
+		}
 
 		time.Sleep(1 * time.Second)
 	}
